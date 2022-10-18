@@ -1,17 +1,18 @@
 import { AppDataSource } from "../../data-source";
 import { User } from "../../entities/user.entity";
 import { IUser } from "../../interfaces/user";
+import ErrorHTTP from "../../errors/ErrorHTTP";
 
 const userCreateService = async ({ email, name, age }: IUser) => {
   const userRepository = AppDataSource.getRepository(User);
 
   const doUserAlreadyExists = await userRepository.findOne({
     where: {
-      email
-    }
-  })
+      email,
+    },
+  });
 
-  if (doUserAlreadyExists) throw new Error("E-mail already in use.")
+  if (doUserAlreadyExists) throw new ErrorHTTP("E-mail already in use.");
 
   const newUser = userRepository.create({
     email: email,
